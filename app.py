@@ -70,7 +70,7 @@ def procesar_pdf(file):
 
     df = pd.DataFrame(movimientos)
     df["Importe"] = df.apply(corregir_importe, axis=1)
-    df = df[~((df["Fecha"].isin(["31/07/2024", "28/06/2024"])) & (df["Descripción"].str.contains("Período de movimientos")))]
+    df = df[~df["Descripción"].str.contains("Período de movimientos", case=False)]
 
     asiento = df[df["Cuenta Contable"].notnull()].groupby(["Cuenta Contable", "Tipo"]).agg({"Importe": "sum"}).reset_index()
     debe_total = asiento[asiento["Tipo"] == "DEBE"]["Importe"].sum()

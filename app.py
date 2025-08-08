@@ -15,7 +15,8 @@ cuentas = {
     "Sueldos a pagar": {"tipo": "DEBE", "claves": ["SERVICIO ACREDITAMIENTO DE HABERES"]},
     "PAGOS AFIP": {"tipo": "DEBE", "claves": ["TRANSF. AFIP", "DEB. AUTOM. DE SERV. AFIP"]},
     "Deudores x ventas": {"tipo": "HABER", "claves": ["ACREDITAMIENTO PRISMA-COMERCIOS", "DEPOSITO EN EFECTIVO", "SERVICIO PAGO A PROVEEDORES"]},
-    "PAGOS Ingresos Brutos AGIP": {"tipo": "DEBE", "claves": ["DEB. AUTOM. DE SERV. RENTAS.CDAD.BSAS"]}
+    "PAGOS Ingresos Brutos AGIP": {"tipo": "DEBE", "claves": ["DEB. AUTOM. DE SERV. RENTAS.CDAD.BSAS"]},
+    "Inversiones Banco": {"tipo": "DEBE", "claves": ["RESCATE FIMA FIMA PREMIUM CLASE B","SUSCRIPCION FIMA FIMA AHORRO PLUS CLA"]}
 }
 
 def to_float(val):

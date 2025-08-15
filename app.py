@@ -10,13 +10,14 @@ st.title("📥 Generador de Asientos Contables desde Extracto PDF")
 
 cuentas = {
     "Comisiones y Gastos Bancarios": {"tipo": "DEBE", "claves": ["COMISION SERVICIO DE CUENTA", "COMISION DEPOSITOS EN EFECTIVO", "COM. GESTION TRANSF.FDOS ENTRE BCOS", "IVA", "COM DEP EFVO BILL BAJA DENOMINACION", "SERVICIO TERMINAL PAYWAY"]},
-    "Anticipo imp. Deb. Cred.Bancario Ley 25413": {"tipo": "DEBE", "claves": ["IMP. DEB. LEY 25413 GRAL", "IMP. CRE. LEY 25413"]},
+    "Anticipo imp. Deb. Cred.Bancario Ley 25413": {"tipo": "DEBE", "claves": ["IMP. DEB. LEY 25413 GRAL", "IMP. CRE. LEY 25413", DEV.IMP.DEB.LEY 25413-ALIC.GENERAL]},
     "Proveedores": {"tipo": "DEBE", "claves": ["PERCEP. IVA", "IMP. ING. BRUTOS", "TRF INMED PROVEED", "PAGO DE SERVICIOS"]},
     "Sueldos a pagar": {"tipo": "DEBE", "claves": ["SERVICIO ACREDITAMIENTO DE HABERES"]},
     "PAGOS AFIP": {"tipo": "DEBE", "claves": ["TRANSF. AFIP", "DEB. AUTOM. DE SERV. AFIP"]},
     "Deudores x ventas": {"tipo": "HABER", "claves": ["ACREDITAMIENTO PRISMA-COMERCIOS", "DEPOSITO EN EFECTIVO", "SERVICIO PAGO A PROVEEDORES"]},
     "PAGOS Ingresos Brutos AGIP": {"tipo": "DEBE", "claves": ["DEB. AUTOM. DE SERV. RENTAS.CDAD.BSAS"]},
-    "Inversiones Banco": {"tipo": "DEBE", "claves": ["RESCATE FIMA FIMA PREMIUM CLASE B","SUSCRIPCION FIMA FIMA AHORRO PLUS CLA"]}
+    "Inversiones Banco": {"tipo": "DEBE", "claves": ["RESCATE FIMA FIMA PREMIUM CLASE B", "SUSCRIPCION FIMA FIMA AHORRO PLUS CLA", "RESCATE FIMA FIMA RENTA EN PESOS"]},
+    "Juicios Afip": {"tipo": "HABER", "claves": ["DEVOLUCION ORDEN JUDICIAL"]},
 }
 
 def to_float(val):

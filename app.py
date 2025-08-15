@@ -9,8 +9,7 @@ st.set_page_config(page_title="Generador de Asientos Contables", layout="centere
 st.title("📥 Generador de Asientos Contables desde Extracto PDF")
 
 cuentas = {
-    "Comisiones y Gastos Bancarios": {"tipo": "DEBE", "claves": ["COMISION SERVICIO DE CUENTA", "COMISION DEPOSITOS EN EFECTIVO", "COM. GESTION TRANSF.FDOS ENTRE BCOS", "IVA", "COM DEP EFVO BILL BAJA
-DENOMINACION", "SERVICIO TERMINAL PAYWAY"]},
+    "Comisiones y Gastos Bancarios": {"tipo": "DEBE", "claves": ["COMISION SERVICIO DE CUENTA", "COMISION DEPOSITOS EN EFECTIVO", "COM. GESTION TRANSF.FDOS ENTRE BCOS", "IVA", "COM DEP EFVO BILL BAJA DENOMINACION", "SERVICIO TERMINAL PAYWAY"]},
     "Anticipo imp. Deb. Cred.Bancario Ley 25413": {"tipo": "DEBE", "claves": ["IMP. DEB. LEY 25413 GRAL", "IMP. CRE. LEY 25413"]},
     "Proveedores": {"tipo": "DEBE", "claves": ["PERCEP. IVA", "IMP. ING. BRUTOS", "TRF INMED PROVEED", "PAGO DE SERVICIOS"]},
     "Sueldos a pagar": {"tipo": "DEBE", "claves": ["SERVICIO ACREDITAMIENTO DE HABERES"]},

@@ -65,7 +65,7 @@ def procesar_pdf(file):
                 descripcion += lines[j] + " "
                 j += 1
             valores = []
-            while j < len(lines) and re.match(r"^\(?-?\d{1,3}(?:\.\d{3})*,\d{2}\)?-?$, lines[j]):
+            while j < len(lines) and re.match(r"^\(?-?\d{1,3}(?:\.\d{3})*,\d{2}\)?-?$", lines[j]):
                 valores.append(lines[j])
                 j += 1
            saldo = valores[-1] if valores else ""

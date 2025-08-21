@@ -83,7 +83,7 @@ elif len(valores) >= 3:
     # Nos quedamos con los 3 últimos por seguridad
     credito, debito, saldo = valores[-3:]
 
-            cuenta, tipo = clasificar_cuenta(descripcion.strip())
+    cuenta, tipo = clasificar_cuenta(descripcion.strip())
             movimientos.append({
                 "Fecha": fecha,
                 "Descripción": descripcion.strip(),

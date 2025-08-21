@@ -84,7 +84,7 @@ elif len(valores) >= 3:
     credito, debito, saldo = valores[-3:]
 
     cuenta, tipo = clasificar_cuenta(descripcion.strip())
-            movimientos.append({
+    movimientos.append({
                 "Fecha": fecha,
                 "Descripción": descripcion.strip(),
                 "Crédito": to_float(credito),

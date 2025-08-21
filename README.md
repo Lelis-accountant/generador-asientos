@@ -20,14 +20,14 @@ y genera automáticamente:
 
 ```bash
 pip install -r requirements.txt
-streamlit run app(2).py
+streamlit run app.py
 ```
 
 ## 🌐 Deploy en Streamlit Cloud
 
 Subí estos archivos a tu repositorio de GitHub:
 
-- `app(2).py`
+- `app.py`
 - `requirements.txt`
 - `README.md`
 
@@ -36,4 +36,4 @@ Y luego conectá tu repo a [streamlit.io](https://streamlit.io/).
 ---
 
 ✍️ Adaptado para extractos PDF **Banco Galicia**.  
-Se pueden agregar más reglas de clasificación editando el diccionario `cuentas` en `app(2).py`.
+Se pueden agregar más reglas de clasificación editando el diccionario `cuentas` en `app.py`.

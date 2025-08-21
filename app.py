@@ -68,7 +68,7 @@ def procesar_pdf(file):
             while j < len(lines) and re.match(r"^\(?-?\d{1,3}(?:\.\d{3})*,\d{2}\)?-?$", lines[j]):
                 valores.append(lines[j])
                 j += 1
-           saldo = valores[-1] if valores else ""
+    saldo = valores[-1] if valores else ""
 credito, debito = "", ""
 
 if len(valores) == 2:
@@ -82,6 +82,7 @@ if len(valores) == 2:
 elif len(valores) >= 3:
     # Nos quedamos con los 3 últimos por seguridad
     credito, debito, saldo = valores[-3:]
+
             cuenta, tipo = clasificar_cuenta(descripcion.strip())
             movimientos.append({
                 "Fecha": fecha,

@@ -23,8 +23,18 @@ cuentas = {
 }
 
 def to_float(val):
-    try: return float(val.replace('.', '').replace(',', '.'))
-    except: return 0.0
+    if not val:
+        return 0.0
+    v = val.strip()
+    if v.startswith('(') and v.endswith(')'):
+        v = '-' + v[1:-1]        # (1.234,56) -> -1.234,56
+    if v.endswith('-') and not v.endswith(',-'):
+        v = '-' + v[:-1]         # 1.234,56- -> -1.234,56
+    v = v.replace('.', '').replace(',', '.')
+    try:
+        return float(v)
+    except:
+        return 0.0
 
 def corregir_importe(row):
     if row["Tipo"] == "DEBE":
@@ -47,21 +57,31 @@ def procesar_pdf(file):
 
     movimientos = []
     for i in range(len(lines)):
-        if re.match(r"\d{2}/\d{2}/\d{2}", lines[i]):
+        if re.match(r"^\(?-?\d{1,3}(?:\.\d{3})*,\d{2}\)?-?$"):
             fecha = lines[i]
             j = i + 1
             descripcion = ""
-            while j < len(lines) and not re.match(r"^-?\d{1,3}(\.\d{3})*,\d{2}$", lines[j]):
+            while j < len(lines) and not re.match(r"^\(?-?\d{1,3}(?:\.\d{3})*,\d{2}\)?-?$", lines[j]):
                 descripcion += lines[j] + " "
                 j += 1
             valores = []
-            while j < len(lines) and re.match(r"^-?\d{1,3}(\.\d{3})*,\d{2}$", lines[j]):
+            while j < len(lines) and re.match(r"^\(?-?\d{1,3}(?:\.\d{3})*,\d{2}\)?-?$, lines[j]):
                 valores.append(lines[j])
                 j += 1
-            saldo = valores[-1] if valores else ""
-            credito, debito = "", ""
-            if len(valores) == 2: credito, saldo = valores
-            elif len(valores) == 3: credito, debito, saldo = valores
+           saldo = valores[-1] if valores else ""
+credito, debito = "", ""
+
+if len(valores) == 2:
+    # 1º valor = movimiento, 2º = saldo
+    mov_raw = valores[0].strip()
+    mov = to_float(mov_raw)
+    if mov < 0:
+        debito = mov_raw
+    else:
+        credito = mov_raw
+elif len(valores) >= 3:
+    # Nos quedamos con los 3 últimos por seguridad
+    credito, debito, saldo = valores[-3:]
             cuenta, tipo = clasificar_cuenta(descripcion.strip())
             movimientos.append({
                 "Fecha": fecha,

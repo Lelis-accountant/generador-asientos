@@ -133,6 +133,6 @@ def procesar_pdf(file):
 uploaded_file = st.file_uploader("Subí tu archivo PDF de extracto bancario", type="pdf")
 
 if uploaded_file is not None:
-    st.success("Archivo cargado correctamente. Procesando...")
+    st.success("Archivo cargado correctamente")
     excel_output = procesar_pdf(uploaded_file)
     st.download_button("📥 Descargar Asiento Contable (.xlsx)", data=excel_output, file_name="asiento_contable.xlsx")

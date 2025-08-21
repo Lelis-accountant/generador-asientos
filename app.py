@@ -22,14 +22,15 @@ cuentas = {
     "Sircreb": {"tipo": "DEBE", "claves": ["ING. BRUTOS S/ CRED REG.RECAU.SIRCREB"]},
 }
 
+# --- to_float robusto (paréntesis y guion final) ---
 def to_float(val):
     if not val:
         return 0.0
     v = val.strip()
     if v.startswith('(') and v.endswith(')'):
-        v = '-' + v[1:-1]        # (1.234,56) -> -1.234,56
+        v = '-' + v[1:-1]
     if v.endswith('-') and not v.endswith(',-'):
-        v = '-' + v[:-1]         # 1.234,56- -> -1.234,56
+        v = '-' + v[:-1]
     v = v.replace('.', '').replace(',', '.')
     try:
         return float(v)
@@ -44,10 +45,14 @@ def corregir_importe(row):
     return 0.0
 
 def clasificar_cuenta(desc):
+    desc_up = (desc or "").upper()
     for cuenta, info in cuentas.items():
-        if any(k in desc for k in info["claves"]):
-            return cuenta, info["tipo"]
+        for k in info["claves"]:
+            if k.upper() in desc_up:
+                return cuenta, info["tipo"]
     return None, None
+
+IMPORTE_RE = re.compile(r"^\(?-?\d{1,3}(?:\.\d{3})*,\d{2}\)?-?$")
 
 def procesar_pdf(file):
     doc = fitz.open(stream=file.read(), filetype="pdf")
@@ -56,35 +61,35 @@ def procesar_pdf(file):
         lines.extend(page.get_text().split("\n"))
 
     movimientos = []
-    for i in range(len(lines)):
-        if re.match(r"^\(?-?\d{1,3}(?:\.\d{3})*,\d{2}\)?-?$"):
+    i = 0
+    while i < len(lines):
+        if re.match(r"\d{2}/\d{2}/\d{2}", lines[i] or ""):
             fecha = lines[i]
             j = i + 1
             descripcion = ""
-            while j < len(lines) and not re.match(r"^\(?-?\d{1,3}(?:\.\d{3})*,\d{2}\)?-?$", lines[j]):
-                descripcion += lines[j] + " "
+            while j < len(lines) and not IMPORTE_RE.match((lines[j] or "").strip()):
+                descripcion += (lines[j] or "") + " "
                 j += 1
             valores = []
-            while j < len(lines) and re.match(r"^\(?-?\d{1,3}(?:\.\d{3})*,\d{2}\)?-?$", lines[j]):
-                valores.append(lines[j])
+            while j < len(lines) and IMPORTE_RE.match((lines[j] or "").strip()):
+                valores.append(lines[j].strip())
                 j += 1
-    saldo = valores[-1] if valores else ""
-credito, debito = "", ""
 
-if len(valores) == 2:
-    # 1º valor = movimiento, 2º = saldo
-    mov_raw = valores[0].strip()
-    mov = to_float(mov_raw)
-    if mov < 0:
-        debito = mov_raw
-    else:
-        credito = mov_raw
-elif len(valores) >= 3:
-    # Nos quedamos con los 3 últimos por seguridad
-    credito, debito, saldo = valores[-3:]
+            saldo = valores[-1] if valores else ""
+            credito, debito = "", ""
 
-    cuenta, tipo = clasificar_cuenta(descripcion.strip())
-    movimientos.append({
+            if len(valores) == 2:
+                mov_raw = valores[0].strip()
+                mov = to_float(mov_raw)
+                if mov < 0:
+                    debito = mov_raw
+                else:
+                    credito = mov_raw
+            elif len(valores) >= 3:
+                credito, debito, saldo = valores[-3:]
+
+            cuenta, tipo = clasificar_cuenta(descripcion.strip())
+            movimientos.append({
                 "Fecha": fecha,
                 "Descripción": descripcion.strip(),
                 "Crédito": to_float(credito),
@@ -93,10 +98,17 @@ elif len(valores) >= 3:
                 "Cuenta Contable": cuenta,
                 "Tipo": tipo
             })
+            i = j
+        else:
+            i += 1
 
     df = pd.DataFrame(movimientos)
+    if df.empty:
+        output = BytesIO()
+        return output
+
     df["Importe"] = df.apply(corregir_importe, axis=1)
-    df = df[~df["Descripción"].str.contains("Período de movimientos", case=False)]
+    df = df[~df["Descripción"].str.contains("Período de movimientos", case=False, na=False)]
 
     asiento = df[df["Cuenta Contable"].notnull()].groupby(["Cuenta Contable", "Tipo"]).agg({"Importe": "sum"}).reset_index()
     debe_total = asiento[asiento["Tipo"] == "DEBE"]["Importe"].sum()
@@ -105,14 +117,16 @@ elif len(valores) >= 3:
     if diferencia != 0:
         asiento.loc[len(asiento.index)] = {"Cuenta Contable": "Banco", "Tipo": "HABER" if diferencia > 0 else "DEBE", "Importe": abs(diferencia)}
 
-    detalle_proveedores = df[df["Descripción"].str.contains("TRF INMED PROVEED|PAGO DE SERVICIOS", case=False)].copy()
-    detalle_proveedores["Débito"] = detalle_proveedores["Débito"].abs()
+    detalle_proveedores = df[df["Descripción"].str.contains("TRF INMED PROVEED|PAGO DE SERVICIOS", case=False, na=False)].copy()
+    if not detalle_proveedores.empty:
+        detalle_proveedores["Débito"] = detalle_proveedores["Débito"].abs()
 
     output = BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df.to_excel(writer, sheet_name="Movimientos Clasificados", index=False)
         asiento.to_excel(writer, sheet_name="Asiento Contable", index=False)
         detalle_proveedores.to_excel(writer, sheet_name="Detalle Proveedores", index=False)
+
     output.seek(0)
     return output
 

@@ -19,7 +19,7 @@ cuentas = {
     "PAGOS Ingresos Brutos AGIP": {"tipo": "DEBE", "claves": ["DEB. AUTOM. DE SERV. RENTAS.CDAD.BSAS"]},
     "Inversiones Banco": {"tipo": "HABER", "claves": ["RESCATE FIMA FIMA PREMIUM CLASE B", "SUSCRIPCION FIMA FIMA AHORRO PLUS CLA", "RESCATE FIMA FIMA RENTA EN PESOS", "RESCATE FIMA"]},
     "Juicios Afip": {"tipo": "HABER", "claves": ["DEVOLUCION ORDEN JUDICIAL"]},
-    "Sircreb": {"tipo": "DEBE", "claves": ["ING. BRUTOS S/CRED"]},
+    "Sircreb": {"tipo": "DEBE", "claves": ["ING. BRUTOS S/CRED REG.RECAU.SIRCREB"]},
 }
 
 def to_float(val):
